@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Custom component styles */
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-legal-100 hover:bg-legal-200 text-legal-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-legal-500 focus:ring-offset-2;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-legal border border-legal-200 p-6;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-legal-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
+  }
+  
+  .risk-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .risk-badge.critical {
+    @apply bg-red-100 text-red-800;
+  }
+  
+  .risk-badge.high {
+    @apply bg-orange-100 text-orange-800;
+  }
+  
+  .risk-badge.medium {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+  
+  .risk-badge.low {
+    @apply bg-green-100 text-green-800;
+  }
+  
+  .risk-badge.minimal {
+    @apply bg-cyan-100 text-cyan-800;
+  }
+}
+
+/* PDF viewer custom styles */
+.pdf-container {
+  @apply w-full h-full bg-legal-50;
+}
+
+.pdf-page {
+  @apply shadow-legal-lg mx-auto my-4;
+}
+
+/* Highlight styles matching backend */
+.highlight-critical {
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.highlight-high {
+  background-color: #fff3e0;
+  border-left: 4px solid #ff9800;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.highlight-medium {
+  background-color: #fff8e1;
+  border-left: 4px solid #ffc107;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.highlight-low {
+  background-color: #f1f8e9;
+  border-left: 4px solid #8bc34a;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+.highlight-info {
+  background-color: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 8px 12px;
+  margin: 4px 0;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Tooltip styles */
+.tooltip {
+  @apply absolute z-50 px-3 py-2 text-sm text-white bg-legal-900 rounded-lg shadow-legal-lg opacity-0 pointer-events-none transition-opacity duration-200;
+}
+
+.tooltip.show {
+  @apply opacity-100;
+}
+
+/* Loading animations */
+.loading-spinner {
+  @apply animate-spin rounded-full border-4 border-legal-200 border-t-primary-600;
+}
+
+.loading-pulse {
+  @apply animate-pulse-slow bg-legal-200 rounded;
+}
+
+/* Responsive utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
