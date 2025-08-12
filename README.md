@@ -1,236 +1,153 @@
 # AI Legal Document Explainer
 
-An intelligent AI-powered system for analyzing, explaining, and extracting insights from legal documents using advanced natural language processing and machine learning techniques.
+An intelligent system for analyzing, understanding, and explaining legal documents using advanced AI and natural language processing techniques.
 
 ## 🚀 Features
 
-- **PDF Document Processing**: Extract text and metadata from legal PDFs
-- **AI-Powered Analysis**: Leverage OpenAI and other LLMs for document understanding
-- **Smart Text Chunking**: Intelligent document segmentation for better processing
-- **Legal Entity Recognition**: Identify and extract key legal terms and concepts
-- **Document Summarization**: Generate concise summaries of complex legal documents
-- **Interactive Visualizations**: Charts and graphs for document insights
-- **RESTful API**: FastAPI backend for easy integration
-- **Database Storage**: SQLite and MongoDB support for document management
+- **Document Processing**: Support for PDF, DOCX, and various document formats
+- **AI-Powered Analysis**: Advanced language models for legal document comprehension
+- **Smart Summarization**: Intelligent extraction of key legal concepts and terms
+- **Interactive Interface**: User-friendly web interface for document upload and analysis
+- **Legal Knowledge Base**: Comprehensive understanding of legal terminology and concepts
 
 ## 🛠️ Technology Stack
 
-### Backend Framework
-- **FastAPI** - Modern, fast web framework for building APIs
-- **Uvicorn** - Lightning-fast ASGI server
-- **Pydantic** - Data validation using Python type annotations
-
-### PDF Processing
-- **pdfplumber** - Accurate text extraction from PDFs
-- **PyMuPDF** - Advanced PDF manipulation and text coordinates
-- **pdf2image** - PDF to image conversion capabilities
-
-### AI & Machine Learning
-- **OpenAI** - GPT models for document analysis
-- **LangChain** - Framework for developing applications with LLMs
-- **LlamaIndex** - Data framework for LLM applications
-- **Transformers** - Hugging Face models for offline processing
-- **Sentence Transformers** - State-of-the-art sentence embeddings
-- **Tiktoken** - Fast BPE tokenizer for OpenAI models
-
-### Data & Storage
-- **SQLAlchemy** - SQL toolkit and Object-Relational Mapping
-- **SQLite** - Lightweight database for development
-- **MongoDB** - NoSQL database for scalable document storage
-
-### Visualization
-- **Matplotlib** - Comprehensive plotting library
-- **Seaborn** - Statistical data visualization
-- **Plotly** - Interactive plotting and dashboards
-- **Pandas** - Data manipulation and analysis
-
-### Utilities
-- **Python-dotenv** - Environment variable management
-- **Requests** - HTTP library for API calls
-- **Aiofiles** - Asynchronous file operations
+- **Backend**: FastAPI, Python 3.13+
+- **AI/ML**: LangChain, OpenAI, LlamaIndex, Sentence Transformers
+- **Document Processing**: PyMuPDF, PDFMiner, Pytesseract, Pillow
+- **Vector Database**: ChromaDB for document embeddings
+- **Frontend**: Modern web interface with visualization capabilities
+- **Data Visualization**: Matplotlib, Seaborn for insights and charts
 
 ## 📋 Prerequisites
 
-- Python 3.8 or higher
-- Git
-- OpenAI API key (for AI features)
+- Python 3.13 or higher
+- Windows 10/11 (current setup)
+- Git for version control
 
 ## 🚀 Quick Start
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/shajishali/AI-powered-legal-Document-Explainer.git
-cd AI-powered-legal-Document-Explainer
+git clone <your-repository-url>
+cd "AI Legal Doc Explainer"
 ```
 
-### 2. Create Virtual Environment
+### 2. Create and Activate Virtual Environment
 ```bash
-python -m venv legal_ai_env
+# Create virtual environment
+python -m venv venv
+
+# Activate on Windows
+venv\Scripts\activate
+
+# Activate on macOS/Linux
+source venv/bin/activate
 ```
 
-### 3. Activate Virtual Environment
-**Windows:**
+### 3. Install Dependencies
 ```bash
-legal_ai_env\Scripts\Activate.ps1
-```
+# Upgrade pip
+pip install --upgrade pip
 
-**macOS/Linux:**
-```bash
-source legal_ai_env/bin/activate
-```
-
-### 4. Install Dependencies
-```bash
+# Install all dependencies
 pip install -r requirements.txt
 ```
 
-### 5. Set Environment Variables
+### 4. Environment Setup
 Create a `.env` file in the project root:
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
-DATABASE_URL=sqlite:///./legal_docs.db
-MONGODB_URL=mongodb://localhost:27017/
+CHROMA_DB_PATH=./chroma_db
+LOG_LEVEL=INFO
 ```
 
-### 6. Run the Application
+### 5. Run the Application
 ```bash
-uvicorn main:app --reload
+# Start the FastAPI server
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ## 📁 Project Structure
 
 ```
-AI-powered-legal-Document-Explainer/
-├── legal_ai_env/          # Virtual environment (not in git)
-├── requirements.txt        # Python dependencies
-├── .gitignore            # Git ignore rules
-├── README.md             # Project documentation
-├── main.py               # FastAPI application entry point
-├── app/                  # Application modules
-│   ├── api/             # API endpoints
-│   ├── core/            # Core functionality
-│   ├── models/          # Data models
-│   ├── services/        # Business logic
-│   └── utils/           # Utility functions
-├── tests/                # Test suite
-├── docs/                 # Documentation
-└── examples/             # Usage examples
+AI Legal Doc Explainer/
+├── venv/                    # Virtual environment
+├── requirements.txt         # Python dependencies
+├── .env                    # Environment variables (create this)
+├── main.py                 # FastAPI application entry point
+├── src/                    # Source code directory
+│   ├── models/            # Data models and schemas
+│   ├── services/          # Business logic services
+│   ├── api/               # API endpoints
+│   ├── utils/             # Utility functions
+│   └── config/            # Configuration management
+├── tests/                  # Test files
+├── docs/                   # Documentation
+└── README.md              # This file
 ```
 
-## 🔧 Configuration
+## 🔧 Development
 
-### Environment Variables
-- `OPENAI_API_KEY`: Your OpenAI API key
-- `DATABASE_URL`: Database connection string
-- `MONGODB_URL`: MongoDB connection string
-- `LOG_LEVEL`: Logging level (DEBUG, INFO, WARNING, ERROR)
-- `MAX_FILE_SIZE`: Maximum file upload size in bytes
-
-### API Configuration
-- Default port: 8000
-- API documentation: http://localhost:8000/docs
-- Interactive API explorer: http://localhost:8000/redoc
-
-## 📚 API Endpoints
-
-### Document Management
-- `POST /api/documents/upload` - Upload legal documents
-- `GET /api/documents/` - List all documents
-- `GET /api/documents/{id}` - Get document details
-- `DELETE /api/documents/{id}` - Delete document
-
-### Document Analysis
-- `POST /api/documents/{id}/analyze` - Analyze document content
-- `GET /api/documents/{id}/summary` - Get document summary
-- `POST /api/documents/{id}/extract-entities` - Extract legal entities
-- `GET /api/documents/{id}/insights` - Get document insights
-
-### AI Features
-- `POST /api/ai/explain` - AI-powered document explanation
-- `POST /api/ai/qa` - Question-answering on documents
-- `POST /api/ai/compare` - Compare multiple documents
-
-## 🧪 Testing
-
-Run the test suite:
+### Code Formatting
 ```bash
-pytest tests/
+# Format code with Black
+black .
+
+# Sort imports with isort
+isort .
 ```
 
-Run with coverage:
+### Running Tests
 ```bash
-pytest --cov=app tests/
+# Run all tests
+pytest
+
+# Run tests with coverage
+pytest --cov=src
 ```
 
-## 📊 Usage Examples
+### Adding New Dependencies
+```bash
+# Install new package
+pip install package_name
 
-### Basic Document Upload
-```python
-import requests
-
-# Upload a legal document
-with open('contract.pdf', 'rb') as f:
-    response = requests.post(
-        'http://localhost:8000/api/documents/upload',
-        files={'file': f}
-    )
-    document_id = response.json()['id']
-
-# Analyze the document
-analysis = requests.post(
-    f'http://localhost:8000/api/documents/{document_id}/analyze'
-)
+# Update requirements.txt
+pip freeze > requirements.txt
 ```
 
-### AI-Powered Explanation
-```python
-# Get AI explanation of a document section
-explanation = requests.post(
-    f'http://localhost:8000/api/ai/explain',
-    json={
-        'document_id': document_id,
-        'text': 'Section text to explain',
-        'context': 'Legal context'
-    }
-)
-```
+## 📚 API Documentation
+
+Once the application is running, visit:
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
+## 🆘 Support
 
-- OpenAI for providing powerful language models
-- The FastAPI community for the excellent web framework
-- Contributors and users of this project
-
-## 📞 Support
-
-If you have any questions or need help:
-- Open an issue on GitHub
-- Check the documentation
-- Review the examples
+For support and questions:
+- Create an issue in the repository
+- Contact the development team
+- Check the documentation in the `docs/` folder
 
 ## 🔮 Roadmap
 
-- [ ] Multi-language support
-- [ ] Advanced legal entity recognition
-- [ ] Document comparison tools
-- [ ] Integration with legal databases
-- [ ] Mobile application
-- [ ] Advanced analytics dashboard
-- [ ] Batch processing capabilities
-- [ ] API rate limiting and authentication
+- [x] Phase 1: Core document processing and analysis ✅ **COMPLETED**
+- [ ] Phase 2: Advanced AI features and legal knowledge base
+- [ ] Phase 3: User management and collaboration features
+- [ ] Phase 4: Mobile application and API integrations
 
 ---
 
-**Built with ❤️ for the legal community**
+**Note**: This project has completed Phase 1 development. Advanced features will be added in subsequent phases.
