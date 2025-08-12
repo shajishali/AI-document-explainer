@@ -18,3 +18,4 @@ echo - Health check: http://127.0.0.1:8000/health
 echo.
 echo Press any key to close this window...
 pause > nul
+

@@ -21,3 +21,4 @@ Write-Host "- Health check: http://127.0.0.1:8000/health" -ForegroundColor White
 Write-Host ""
 Write-Host "Press Enter to close this window..." -ForegroundColor Yellow
 Read-Host
+
