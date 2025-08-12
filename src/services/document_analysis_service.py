@@ -15,6 +15,9 @@ import shutil
 from .document_processor import DocumentProcessor
 from .summarization_service import SummarizationService
 from .basic_risk_classifier import BasicRiskClassifier
+from .clause_detector import ClauseDetector
+from .enhanced_risk_classifier import EnhancedRiskClassifier
+from .document_highlighter import DocumentHighlighter
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +29,15 @@ class DocumentAnalysisService:
         self.summarization_service = SummarizationService(openai_api_key)
         self.risk_classifier = BasicRiskClassifier()
         
+        # Phase 2: Enhanced Analysis Services
+        self.clause_detector = ClauseDetector()
+        self.enhanced_risk_classifier = EnhancedRiskClassifier()
+        self.document_highlighter = DocumentHighlighter()
+        
         # Create temporary directory for file processing
         self.temp_dir = tempfile.mkdtemp(prefix="legal_doc_analyzer_")
         logger.info(f"Document analysis service initialized. Temp directory: {self.temp_dir}")
+        logger.info("Phase 2 services loaded: ClauseDetector, EnhancedRiskClassifier, DocumentHighlighter")
     
     def __del__(self):
         """Cleanup temporary directory on service destruction."""
@@ -82,15 +91,37 @@ class DocumentAnalysisService:
             risk_classification = self.risk_classifier.classify_document_risks(full_text)
             specific_risks = self.risk_classifier.identify_specific_risks(full_text)
             
-            # Step 5: Generate comprehensive results
-            logger.info("Step 5: Compiling analysis results...")
+            # Step 5: Phase 2 - Advanced Analysis
+            logger.info("Step 5: Performing advanced analysis (Phase 2)...")
+            
+            # 5a: Clause Detection
+            logger.info("Step 5a: Detecting legal clauses...")
+            clauses = self.clause_detector.detect_clauses(full_text)
+            clause_summary = self.clause_detector.get_clause_summary(clauses)
+            
+            # 5b: Enhanced Risk Classification
+            logger.info("Step 5b: Enhanced risk assessment...")
+            enhanced_risk_assessment = self.enhanced_risk_classifier.classify_risk(clauses, full_text)
+            
+            # 5c: Document Highlighting
+            logger.info("Step 5c: Generating document highlights...")
+            highlighted_document = self.document_highlighter.highlight_document(
+                full_text, clauses, enhanced_risk_assessment
+            )
+            
+            # Step 6: Generate comprehensive results
+            logger.info("Step 6: Compiling analysis results...")
             analysis_results = self._compile_analysis_results(
                 processing_result,
                 legal_terms_result,
                 summary_result,
                 risk_classification,
                 specific_risks,
-                start_time
+                start_time,
+                clauses,
+                clause_summary,
+                enhanced_risk_assessment,
+                highlighted_document
             )
             
             logger.info(f"Document analysis completed successfully in {analysis_results['processing_time']:.2f} seconds")
@@ -119,7 +150,11 @@ class DocumentAnalysisService:
                                 summary_result: Dict[str, Any],
                                 risk_classification: Dict[str, Any],
                                 specific_risks: Dict[str, Any],
-                                start_time: float) -> Dict[str, Any]:
+                                start_time: float,
+                                clauses: List[Any],
+                                clause_summary: Dict[str, Any],
+                                enhanced_risk_assessment: Any,
+                                highlighted_document: Any) -> Dict[str, Any]:
         """Compile all analysis results into a comprehensive response."""
         try:
             processing_time = time.time() - start_time
@@ -172,16 +207,47 @@ class DocumentAnalysisService:
                     'confidence_score': risk_confidence
                 },
                 
+                # Phase 2: Advanced Analysis Results
+                'phase2_analysis': {
+                    'clause_detection': {
+                        'success': len(clauses) > 0,
+                        'total_clauses': clause_summary.get('total_clauses', 0),
+                        'clauses_by_type': clause_summary.get('clauses_by_type', {}),
+                        'risk_distribution': clause_summary.get('risk_distribution', {}),
+                        'importance_distribution': clause_summary.get('importance_distribution', {}),
+                        'high_priority_clauses': clause_summary.get('high_priority_clauses', [])
+                    },
+                    'enhanced_risk_assessment': {
+                        'overall_risk': enhanced_risk_assessment.overall_risk.value if hasattr(enhanced_risk_assessment, 'overall_risk') else 'unknown',
+                        'risk_score': enhanced_risk_assessment.risk_score if hasattr(enhanced_risk_assessment, 'risk_score') else 0.0,
+                        'risk_category': enhanced_risk_assessment.risk_category if hasattr(enhanced_risk_assessment, 'risk_category') else 'Unknown',
+                        'total_indicators': enhanced_risk_assessment.summary.get('total_indicators', 0) if hasattr(enhanced_risk_assessment, 'summary') else 0,
+                        'top_risk_categories': enhanced_risk_assessment.summary.get('top_risk_categories', []) if hasattr(enhanced_risk_assessment, 'summary') else [],
+                        'recommendations': enhanced_risk_assessment.recommendations if hasattr(enhanced_risk_assessment, 'recommendations') else []
+                    },
+                    'document_highlighting': {
+                        'total_highlights': highlighted_document.metadata.get('total_highlights', 0) if hasattr(highlighted_document, 'metadata') else 0,
+                        'highlight_types': highlighted_document.metadata.get('highlight_types', {}) if hasattr(highlighted_document, 'metadata') else {},
+                        'risk_distribution': highlighted_document.metadata.get('risk_distribution', {}) if hasattr(highlighted_document, 'metadata') else {},
+                        'clause_distribution': highlighted_document.metadata.get('clause_distribution', {}) if hasattr(highlighted_document, 'metadata') else {},
+                        'line_coverage': highlighted_document.metadata.get('line_coverage', []) if hasattr(highlighted_document, 'metadata') else []
+                    }
+                },
+                
                 # Analysis Metadata
                 'analysis_metadata': {
                     'analysis_type': 'comprehensive',
                     'services_used': [
                         'DocumentProcessor',
                         'SummarizationService', 
-                        'BasicRiskClassifier'
+                        'BasicRiskClassifier',
+                        'ClauseDetector',
+                        'EnhancedRiskClassifier',
+                        'DocumentHighlighter'
                     ],
                     'timestamp': time.time(),
-                    'version': '1.0.0'
+                    'version': '2.0.0',
+                    'phase': 'Phase 2 Complete'
                 }
             }
             
@@ -221,7 +287,20 @@ class DocumentAnalysisService:
             risk_classification = self.risk_classifier.classify_document_risks(text)
             specific_risks = self.risk_classifier.identify_specific_risks(text)
             
-            # Step 4: Compile results
+            # Step 4: Phase 2 - Advanced Analysis
+            logger.info("Step 4: Performing advanced analysis (Phase 2)...")
+            
+            # 4a: Clause Detection
+            clauses = self.clause_detector.detect_clauses(text)
+            clause_summary = self.clause_detector.get_clause_summary(clauses)
+            
+            # 4b: Enhanced Risk Classification
+            enhanced_risk_assessment = self.enhanced_risk_classifier.classify_risk(clauses, text)
+            
+            # 4c: Document Highlighting
+            highlighted_document = self.document_highlighter.highlight_document(text, clauses, enhanced_risk_assessment)
+            
+            # Step 5: Compile results
             results = {
                 'success': True,
                 'processing_time': time.time() - start_time,
@@ -257,11 +336,39 @@ class DocumentAnalysisService:
                     'confidence_score': 0.8 if risk_classification['success'] else 0.0
                 },
                 
+                # Phase 2: Advanced Analysis Results
+                'phase2_analysis': {
+                    'clause_detection': {
+                        'success': len(clauses) > 0,
+                        'total_clauses': clause_summary.get('total_clauses', 0),
+                        'clauses_by_type': clause_summary.get('clauses_by_type', {}),
+                        'risk_distribution': clause_summary.get('risk_distribution', {}),
+                        'importance_distribution': clause_summary.get('importance_distribution', {}),
+                        'high_priority_clauses': clause_summary.get('high_priority_clauses', [])
+                    },
+                    'enhanced_risk_assessment': {
+                        'overall_risk': enhanced_risk_assessment.overall_risk.value if hasattr(enhanced_risk_assessment, 'overall_risk') else 'unknown',
+                        'risk_score': enhanced_risk_assessment.risk_score if hasattr(enhanced_risk_assessment, 'risk_score') else 0.0,
+                        'risk_category': enhanced_risk_assessment.risk_category if hasattr(enhanced_risk_assessment, 'risk_category') else 'Unknown',
+                        'total_indicators': enhanced_risk_assessment.summary.get('total_indicators', 0) if hasattr(enhanced_risk_assessment, 'summary') else 0,
+                        'top_risk_categories': enhanced_risk_assessment.summary.get('top_risk_categories', []) if hasattr(enhanced_risk_assessment, 'summary') else [],
+                        'recommendations': enhanced_risk_assessment.recommendations if hasattr(enhanced_risk_assessment, 'recommendations') else []
+                    },
+                    'document_highlighting': {
+                        'total_highlights': highlighted_document.metadata.get('total_highlights', 0) if hasattr(highlighted_document, 'metadata') else 0,
+                        'highlight_types': highlighted_document.metadata.get('highlight_types', {}) if hasattr(highlighted_document, 'metadata') else {},
+                        'risk_distribution': highlighted_document.metadata.get('risk_distribution', {}) if hasattr(highlighted_document, 'metadata') else {},
+                        'clause_distribution': highlighted_document.metadata.get('clause_distribution', {}) if hasattr(highlighted_document, 'metadata') else {},
+                        'line_coverage': highlighted_document.metadata.get('line_coverage', []) if hasattr(highlighted_document, 'metadata') else []
+                    }
+                },
+                
                 'analysis_metadata': {
                     'analysis_type': analysis_type,
-                    'services_used': ['SummarizationService', 'BasicRiskClassifier'],
+                    'services_used': ['SummarizationService', 'BasicRiskClassifier', 'ClauseDetector', 'EnhancedRiskClassifier', 'DocumentHighlighter'],
                     'timestamp': time.time(),
-                    'version': '1.0.0'
+                    'version': '2.0.0',
+                    'phase': 'Phase 2 Complete'
                 }
             }
             
@@ -279,12 +386,21 @@ class DocumentAnalysisService:
         """Get the current status of the analysis service."""
         return {
             'service_status': 'operational',
+            'phase': 'Phase 2 Complete',
             'services_available': {
                 'document_processor': True,
                 'summarization_service': self.summarization_service.llm is not None,
-                'risk_classifier': True
+                'risk_classifier': True,
+                'clause_detector': True,
+                'enhanced_risk_classifier': True,
+                'document_highlighter': True
             },
             'temp_directory': self.temp_dir,
             'supported_formats': self.document_processor.supported_formats,
-            'max_file_size': self.document_processor.max_file_size
+            'max_file_size': self.document_processor.max_file_size,
+            'phase2_features': {
+                'clause_detection': 'Legal clause identification and categorization',
+                'enhanced_risk_classification': 'Multi-level risk assessment with recommendations',
+                'document_highlighting': 'Risk-based document highlighting with tooltips'
+            }
         }
