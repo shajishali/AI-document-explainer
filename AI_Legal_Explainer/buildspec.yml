@@ -1,0 +1,34 @@
+﻿version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 672645751535.dkr.ecr.us-east-1.amazonaws.com/ai-legal-explainer
+      - REPOSITORY_URI=672645751535.dkr.ecr.us-east-1.amazonaws.com/ai-legal-explainer
+      - IMAGE_TAG=latest
+      - echo Current directory contents:
+      - ls -la
+      - echo Checking if we're in the right directory:
+      - pwd
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - echo Checking for Dockerfile:
+      - ls -la Dockerfile || echo "Dockerfile not found in current directory"
+      - echo Checking for requirements files:
+      - ls -la requirements*.txt || echo "Requirements files not found"
+      - docker build -t $REPOSITORY_URI:$IMAGE_TAG .
+      - docker tag $REPOSITORY_URI:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo Writing image definitions file...
+      - printf '[{"name":"ai-legal-app","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
