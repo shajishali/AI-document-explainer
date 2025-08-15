@@ -1,0 +1,387 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Risk Dashboard - {{ document.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Compact Document Header -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-2">Risk Dashboard</h2>
+                    <div class="d-flex align-items-center gap-3">
+                        <h6 class="mb-0">{{ document.title }}</h6>
+                        <span class="badge bg-secondary">{{ document.get_document_type_display }}</span>
+                        {% if document.is_processed %}
+                            <span class="badge bg-success">Processed</span>
+                        {% else %}
+                            <span class="badge bg-warning">Processing Required</span>
+                        {% endif %}
+                        <small class="text-muted">Uploaded: {{ document.uploaded_at|date:"M j, Y" }}</small>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'main:document_detail' document.id %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                    <a href="{% url 'main:home' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if has_error %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong> {{ dashboard_data.error }}
+        </div>
+    {% else %}
+        <!-- Dashboard Content - 2 Columns -->
+        <div class="row g-3">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <!-- Risk Distribution Chart -->
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white py-2">
+                        <h6 class="mb-0">
+                            <i class="fas fa-chart-pie me-2"></i>Risk Distribution
+                        </h6>
+                    </div>
+                    <div class="card-body py-2">
+                        {{ dashboard_data.risk_distribution|safe }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <!-- Risk Timeline Chart -->
+                <div class="card h-100">
+                    <div class="card-header bg-info text-white py-2">
+                        <h6 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>Clause Timeline
+                        </h6>
+                    </div>
+                    <div class="card-body py-2">
+                        {{ dashboard_data.risk_timeline|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Row - 2 Columns -->
+        <div class="row g-3 mt-3">
+            <!-- Left Column -->
+            <div class="col-md-6">
+                <!-- Clause Type Analysis -->
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white py-2">
+                        <h6 class="mb-0">
+                            <i class="fas fa-layer-group me-2"></i>Clause Analysis by Type
+                        </h6>
+                    </div>
+                    <div class="card-body py-2">
+                        {{ dashboard_data.clause_analysis|safe }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-6">
+                <!-- Overall Risk Assessment -->
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark py-2">
+                        <h6 class="mb-0">
+                            <i class="fas fa-gauge-high me-2"></i>Overall Risk Assessment
+                        </h6>
+                    </div>
+                    <div class="card-body py-2">
+                        {{ dashboard_data.risk_gauge|safe }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Compact Dashboard Styles */
+.card {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.card-header {
+    border-radius: 8px 8px 0 0 !important;
+    border-bottom: none;
+}
+
+.card-body {
+    padding: 0.75rem;
+}
+
+/* 2-Column Layout Styles */
+.card.h-100 {
+    min-height: 300px;
+    height: 100%;
+}
+
+.row.g-3 {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1rem;
+}
+
+/* Ensure equal heights for cards in same row */
+.row .col-md-6:first-child .card,
+.row .col-md-6:last-child .card {
+    height: 100%;
+}
+
+/* Risk Chart Styles - Compact */
+.risk-chart .chart-container {
+    padding: 0;
+}
+
+.risk-chart .chart-item {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.risk-chart .risk-label {
+    min-width: 80px;
+    margin-right: 8px;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
+.risk-chart .risk-bar {
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.7rem;
+    min-width: 20px;
+}
+
+/* Timeline Chart Styles - Compact */
+.timeline-chart .timeline-container {
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.timeline-chart .timeline-item {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    border-left: 2px solid #ddd;
+}
+
+.timeline-chart .timeline-marker {
+    position: absolute;
+    left: -6px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.timeline-chart .timeline-content {
+    padding: 6px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.timeline-chart .risk-level {
+    display: inline-block;
+    padding: 1px 4px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    margin-left: 6px;
+}
+
+.timeline-chart .clause-preview {
+    margin-top: 3px;
+    font-style: italic;
+    color: #666;
+    font-size: 0.7rem;
+}
+
+/* Clause Analysis Chart Styles - Compact */
+.clause-analysis-chart .chart-container {
+    padding: 0;
+}
+
+.clause-analysis-chart .clause-type-group {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #dee2e6;
+}
+
+.clause-analysis-chart .clause-type-label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+    color: #495057;
+}
+
+.clause-analysis-chart .risk-bars {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+
+.clause-analysis-chart .risk-bar {
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.7rem;
+    min-width: 20px;
+    padding: 0 4px;
+}
+
+.clause-analysis-chart .legend {
+    margin-top: 10px;
+    text-align: center;
+    padding: 6px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-top: 1px solid #dee2e6;
+}
+
+.clause-analysis-chart .legend-item {
+    display: inline-block;
+    margin: 0 6px;
+    font-size: 0.7rem;
+    color: #6c757d;
+}
+
+.clause-analysis-chart .legend-color {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 3px;
+    vertical-align: middle;
+}
+
+.clause-analysis-chart .legend-color.high {
+    background-color: #ff4444;
+}
+
+.clause-analysis-chart .legend-color.medium {
+    background-color: #ffaa00;
+}
+
+.clause-analysis-chart .legend-color.low {
+    background-color: #44ff44;
+}
+
+/* Risk Gauge Styles - Compact */
+.risk-gauge .gauge-container {
+    text-align: center;
+    padding: 0;
+}
+
+.risk-gauge .gauge-circle {
+    width: 120px;
+    height: 120px;
+    border: 10px solid;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+}
+
+.risk-gauge .gauge-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.risk-gauge .gauge-label {
+    font-size: 0.8em;
+    color: #666;
+}
+
+.risk-gauge .gauge-details {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.risk-gauge .detail-item {
+    display: inline-block;
+    margin: 0 6px;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    font-size: 0.7rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .risk-chart .risk-label {
+        min-width: 60px;
+        font-size: 0.7rem;
+    }
+    
+    .timeline-chart .timeline-container {
+        max-height: 180px;
+    }
+    
+    .risk-gauge .gauge-circle {
+        width: 100px;
+        height: 100px;
+        border-width: 8px;
+    }
+    
+    .risk-gauge .gauge-value {
+        font-size: 1.2em;
+    }
+}
+
+/* Scrollbar styling */
+.timeline-chart .timeline-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.timeline-chart .timeline-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.timeline-chart .timeline-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+}
+
+.timeline-chart .timeline-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+</style>
+{% endblock %}
